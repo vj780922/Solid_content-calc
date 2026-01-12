@@ -13,34 +13,34 @@
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
 
     <div class="bg-white p-8 rounded-[2rem] shadow-lg w-full max-w-[450px]">
-        <h1 class="text-3xl font-bold text-blue-600 text-center mb-10">固含量稀釋計算機</h1>
+        <h1 class="text-3xl font-bold text-blue-600 text-center mb-10">RO 水添加量計算機</h1>
         
         <div class="space-y-6">
             <div>
-                <label class="block text-lg font-bold text-slate-700 mb-2">含水物固含量 (%)</label>
+                <label class="block text-lg font-bold text-slate-700 mb-2">原始固含量 (%)</label>
                 <input type="number" id="origSolid" 
                     class="w-full h-16 px-5 border-2 border-slate-200 rounded-2xl text-xl outline-none focus:border-blue-500 transition-colors"
-                    placeholder="請輸入固含量">
+                    placeholder="例如：50">
             </div>
 
             <div>
-                <label class="block text-lg font-bold text-slate-700 mb-2">含水物重量 (kg)</label>
+                <label class="block text-lg font-bold text-slate-700 mb-2">原始重量 (kg)</label>
                 <input type="number" id="origWeight" 
                     class="w-full h-16 px-5 border-2 border-slate-200 rounded-2xl text-xl outline-none focus:border-blue-500 transition-colors"
-                    placeholder="請輸入重量">
+                    placeholder="例如：100">
             </div>
 
             <div>
-                <label class="block text-lg font-bold text-slate-700 mb-2">加入 RO 水重量 (kg)</label>
-                <input type="number" id="waterAdded" 
+                <label class="block text-lg font-bold text-slate-700 mb-2">設定目標固含量 (%)</label>
+                <input type="number" id="targetSolid" 
                     class="w-full h-16 px-5 border-2 border-slate-200 rounded-2xl text-xl outline-none focus:border-blue-500 transition-colors"
-                    placeholder="請輸入水重量">
+                    placeholder="例如：20">
             </div>
 
             <div>
-                <label class="block text-lg font-bold text-slate-700 mb-2">計算結果 (最終固含量)</label>
+                <label class="block text-lg font-bold text-slate-700 mb-2">應加入 RO 水重量 (kg)</label>
                 <div class="dashed-box w-full h-16 px-5 flex items-center rounded-2xl">
-                    <span id="finalResult" class="text-xl text-slate-500">等待計算...</span>
+                    <span id="waterResult" class="text-xl text-slate-500">等待計算...</span>
                 </div>
             </div>
 
@@ -49,7 +49,7 @@
                     清空
                 </button>
                 <button onclick="calculate()" class="flex-[1.5] bg-blue-600 text-white text-xl font-bold py-4 rounded-xl hover:bg-blue-700 transition-colors shadow-blue-200 shadow-lg">
-                    計算固含量
+                    計算添加量
                 </button>
             </div>
         </div>
@@ -58,29 +58,36 @@
     <div class="mt-8 text-center text-slate-400 space-y-1">
         <p>作者：SJ</p>
         <p>版本：v1.1.0</p>
-        <p>最後更新日期：2024-05-22</p>
+        <p>最後更新日期：2025-01-12</p>
     </div>
 
     <script>
         function calculate() {
-            const S1 = parseFloat(document.getElementById('origSolid').value);
+            const C1 = parseFloat(document.getElementById('origSolid').value);
             const W1 = parseFloat(document.getElementById('origWeight').value);
-            const Ww = parseFloat(document.getElementById('waterAdded').value);
-            const resultDisplay = document.getElementById('finalResult');
+            const Ctarget = parseFloat(document.getElementById('targetSolid').value);
+            const resultDisplay = document.getElementById('waterResult');
 
-            if (isNaN(S1) || isNaN(W1) || isNaN(Ww)) {
+            if (isNaN(C1) || isNaN(W1) || isNaN(Ctarget)) {
                 alert("請填寫完整的數值");
                 return;
             }
 
-            const totalWeight = W1 + Ww;
-            if (totalWeight <= 0) {
-                resultDisplay.innerText = "重量錯誤";
+            if (Ctarget >= C1) {
+                alert("目標固含量必須低於原始固含量（稀釋邏輯）");
+                resultDisplay.innerText = "數值無效";
                 return;
             }
 
-            const finalSolid = (S1 * W1) / totalWeight;
-            resultDisplay.innerText = finalSolid.toFixed(2) + "%";
+            if (Ctarget <= 0) {
+                resultDisplay.innerText = "目標不能為0";
+                return;
+            }
+
+            // 公式: W_water = (W1 * C1 / Ctarget) - W1
+            const waterNeeded = (W1 * C1 / Ctarget) - W1;
+            
+            resultDisplay.innerText = waterNeeded.toFixed(2) + " kg";
             resultDisplay.classList.remove('text-slate-500');
             resultDisplay.classList.add('text-blue-600', 'font-bold');
         }
@@ -88,8 +95,8 @@
         function resetFields() {
             document.getElementById('origSolid').value = '';
             document.getElementById('origWeight').value = '';
-            document.getElementById('waterAdded').value = '';
-            const resultDisplay = document.getElementById('finalResult');
+            document.getElementById('targetSolid').value = '';
+            const resultDisplay = document.getElementById('waterResult');
             resultDisplay.innerText = "等待計算...";
             resultDisplay.classList.add('text-slate-500');
             resultDisplay.classList.remove('text-blue-600', 'font-bold');
