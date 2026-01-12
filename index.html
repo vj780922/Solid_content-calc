@@ -43,4 +43,94 @@
         .result-label { color: #1967d2; font-size: 15px; margin-bottom: 5px; font-weight: 500; }
         .result-value { font-size: 34px; font-weight: bold; color: #d93025; font-family: Calibri, sans-serif; }
         
-        .footer {
+        .footer { text-align: center; color: #888; font-size: 12px; line-height: 1.6; margin-top: auto; padding-top: 10px; font-family: Calibri, "Microsoft JhengHei", sans-serif; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>含水物重量計算機</h2>
+    
+    <div class="input-group">
+        <label>原料含水率 (%)</label>
+        <input type="number" id="materialMoisture" placeholder="請輸入原料含水率" step="0.01" onfocus="this.select()">
+    </div>
+
+    <div class="input-group">
+        <label>外加 RO 水重量 (kg)</label>
+        <input type="number" id="addedWater" placeholder="請輸入加入水量" step="0.001" onfocus="this.select()">
+    </div>
+
+    <div class="input-group">
+        <label>目標總含水率 (%)</label>
+        <input type="number" id="targetMoisture" placeholder="請輸入目標含水率" step="0.1" onfocus="this.select()">
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-calc" onclick="calculate()">計算含水物重量</button>
+        <button class="btn-reset" onclick="resetForm()">清除</button>
+    </div>
+
+    <div class="result-box" id="resultArea">
+        <div class="result-label">應秤取含水物重量 (X)</div>
+        <div class="result-value"><span id="outputX">0</span> <small style="font-size: 16px; color: #444;">kg</small></div>
+    </div>
+</div>
+
+<div class="footer">
+    作者：SJ<br>
+    版本：v1.6.0 (水分平衡版)<br>
+    最後更新日期：2026-01-12
+</div>
+
+<script>
+    function calculate() {
+        const mmInput = document.getElementById('materialMoisture');
+        const awInput = document.getElementById('addedWater');
+        const tmInput = document.getElementById('targetMoisture');
+        const resArea = document.getElementById('resultArea');
+        const output = document.getElementById('outputX');
+
+        if (!mmInput.value || !awInput.value || !tmInput.value) {
+            alert("請填寫完整的數值");
+            return;
+        }
+
+        const M1 = parseFloat(mmInput.value) / 100; // 原料含水率
+        const W_water = parseFloat(awInput.value);  // 外加水重
+        const Mt = parseFloat(tmInput.value) / 100; // 目標含水率
+
+        // 檢查：若原料含水率已經低於目標含水率，加水無法達到該目標
+        if (M1 >= Mt) {
+            alert("錯誤：原料含水率必須低於目標含水率（加水稀釋邏輯）。");
+            return;
+        }
+
+        // 公式推導: 
+        // (M1 * X + W_water) / (X + W_water) = Mt
+        // M1 * X + W_water = Mt * X + Mt * W_water
+        // (Mt - M1) * X = W_water * (1 - Mt)
+        // X = (W_water * (1 - Mt)) / (Mt - M1)
+
+        const X = (W_water * (1 - Mt)) / (Mt - M1);
+        
+        output.innerText = X.toFixed(4);
+        resArea.style.display = 'block';
+        
+        setTimeout(() => {
+            resArea.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+
+    function resetForm() {
+        document.getElementById('materialMoisture').value = '';
+        document.getElementById('addedWater').value = '';
+        document.getElementById('targetMoisture').value = '';
+        document.getElementById('resultArea').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
