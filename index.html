@@ -55,17 +55,17 @@
     
     <div class="input-group">
         <label>原料固含量 (%)</label>
-        <input type="number" id="solidPct" placeholder="請輸入固含量 (如: 2.39)" step="0.01" onfocus="this.select()">
+        <input type="number" id="solidPct" placeholder="請輸入固含量" step="0.01" onfocus="this.select()">
     </div>
 
     <div class="input-group">
         <label>外加 RO 水重量 (kg)</label>
-        <input type="number" id="addedWater" placeholder="請輸入水重 (如: 1.093)" step="0.001" onfocus="this.select()">
+        <input type="number" id="addedWater" placeholder="請輸入水重" step="0.001" onfocus="this.select()">
     </div>
 
     <div class="input-group">
         <label>目標總含水率 (%)</label>
-        <input type="number" id="targetMoisture" placeholder="請輸入目標 (如: 66)" step="0.1" onfocus="this.select()">
+        <input type="number" id="targetMoisture" placeholder="請輸入目標" step="0.1" onfocus="this.select()">
     </div>
 
     <div class="btn-group">
@@ -80,60 +80,3 @@
 </div>
 
 <div class="footer">
-    作者：SJ<br>
-    版本：v1.8.0 (手算公式對應版)<br>
-    最後更新日期：2026-01-12
-</div>
-
-<script>
-    function calculate() {
-        const s_val = document.getElementById('solidPct').value;
-        const w_val = document.getElementById('addedWater').value;
-        const m_val = document.getElementById('targetMoisture').value;
-        const resArea = document.getElementById('resultArea');
-        const output = document.getElementById('outputX');
-
-        if (!s_val || !w_val || !m_val) {
-            alert("請填寫完整的數值");
-            return;
-        }
-
-        // S = 固含量 %, W = 外加水重, Mt = 目標含水率 %
-        const S = parseFloat(s_val) / 100; 
-        const W = parseFloat(w_val); 
-        const Mt = parseFloat(m_val) / 100; 
-
-        // 核心公式定義：((1 - S) * X) / (W + X) = Mt
-        // (1 - S) * X = Mt * (W + X)
-        // (1 - S) * X = Mt * W + Mt * X
-        // (1 - S - Mt) * X = Mt * W
-        // X = (Mt * W) / (1 - S - Mt)
-
-        const denominator = 1 - S - Mt;
-
-        if (Math.abs(denominator) < 0.000001) {
-            alert("錯誤：數值導致分母為零，請檢查參數設定。");
-            return;
-        }
-
-        const X = (Mt * W) / denominator;
-        
-        // 輸出結果取絕對值並保留四位小數
-        output.innerText = Math.abs(X).toFixed(4);
-        resArea.style.display = 'block';
-        
-        setTimeout(() => {
-            resArea.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-    }
-
-    function resetForm() {
-        document.getElementById('solidPct').value = '';
-        document.getElementById('addedWater').value = '';
-        document.getElementById('targetMoisture').value = '';
-        document.getElementById('resultArea').style.display = 'none';
-    }
-</script>
-
-</body>
-</html>
