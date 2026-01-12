@@ -3,83 +3,55 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>RO水稀釋固含量計算器</title>
+    <title>固含量稀釋計算器</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #f8fafc; }
+        .card { background: white; border-top: 4px solid #1e40af; }
+    </style>
 </head>
-<body class="bg-slate-100 flex items-center justify-center min-h-screen">
+<body class="flex items-center justify-center min-h-screen p-4">
 
-    <div class="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full border border-slate-200">
-        <h2 class="text-2xl font-bold text-slate-800 mb-2 text-center">固含量稀釋計算</h2>
-        <p class="text-center text-slate-500 text-sm mb-6">單位統一使用：公斤 (kg)</p>
-        
-        <div class="space-y-5">
+    <div class="card w-full max-w-md shadow-2xl rounded-xl p-6 md:p-8">
+        <header class="mb-8 text-center">
+            <h1 class="text-2xl font-bold text-slate-800">固含量稀釋計算器</h1>
+            <p class="text-slate-500 text-sm mt-2">輸入數值後即時獲得計算結果</p>
+        </header>
+
+        <div class="space-y-6">
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">原始固含量 (%)</label>
+                <label class="block text-sm font-medium text-slate-600 mb-2">原始固含量 (%)</label>
                 <div class="relative">
-                    <input type="number" id="origSolid" class="block w-full border-slate-300 rounded-lg shadow-sm p-3 pr-10 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="輸入百分比" value="50">
-                    <span class="absolute inset-y-0 right-3 flex items-center text-slate-400">%</span>
+                    <input type="number" id="origSolid" step="0.1" 
+                        class="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-lg font-semibold text-slate-700"
+                        value="40">
                 </div>
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">原始重量 (kg)</label>
+                <label class="block text-sm font-medium text-slate-600 mb-2">原始重量 (kg)</label>
                 <div class="relative">
-                    <input type="number" id="origWeight" class="block w-full border-slate-300 rounded-lg shadow-sm p-3 pr-12 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="輸入重量" value="10">
-                    <span class="absolute inset-y-0 right-3 flex items-center text-slate-400">kg</span>
+                    <input type="number" id="origWeight" step="0.1" 
+                        class="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-lg font-semibold text-slate-700"
+                        value="100">
                 </div>
             </div>
 
             <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-1">加入 RO 水重量 (kg)</label>
+                <label class="block text-sm font-medium text-slate-600 mb-2">加入 RO 水重量 (kg)</label>
                 <div class="relative">
-                    <input type="number" id="waterAdded" class="block w-full border-slate-300 rounded-lg shadow-sm p-3 pr-12 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none" placeholder="輸入加水量" value="5">
-                    <span class="absolute inset-y-0 right-3 flex items-center text-slate-400">kg</span>
+                    <input type="number" id="waterAdded" step="0.1" 
+                        class="w-full h-12 px-4 bg-slate-50 border border-slate-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:bg-white outline-none transition-all text-lg font-semibold text-slate-700"
+                        value="0">
                 </div>
             </div>
 
-            <div class="pt-4">
-                <div class="bg-blue-600 p-5 rounded-xl text-white shadow-inner">
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-blue-100 text-sm">最終總重量</span>
-                        <span class="text-xl font-mono"><span id="totalWeight">15.00</span> kg</span>
+            <div class="mt-8 pt-6 border-t border-slate-100">
+                <div class="grid grid-cols-2 gap-4">
+                    <div class="bg-slate-50 p-4 rounded-lg text-center">
+                        <span class="block text-xs text-slate-400 uppercase tracking-wider mb-1">最終總重量</span>
+                        <span class="text-xl font-bold text-slate-700"><span id="totalWeight">100.00</span> <small class="text-sm font-normal text-slate-400">kg</small></span>
                     </div>
-                    <div class="flex justify-between items-center border-t border-blue-400 pt-2">
-                        <span class="text-white font-bold">最終固含量</span>
-                        <span class="text-3xl font-bold font-mono" id="finalSolid">33.33%</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <p class="text-center text-xs text-slate-400 mt-6">公式：(原始固含量 × 原始重量) / (總重量)</p>
-    </div>
-
-    <script>
-        const inputs = ['origSolid', 'origWeight', 'waterAdded'];
-        
-        inputs.forEach(id => {
-            document.getElementById(id).addEventListener('input', calculate);
-        });
-
-        function calculate() {
-            const C1 = parseFloat(document.getElementById('origSolid').value) || 0;
-            const W1 = parseFloat(document.getElementById('origWeight').value) || 0;
-            const Ww = parseFloat(document.getElementById('waterAdded').value) || 0;
-
-            const totalWeight = W1 + Ww;
-            
-            if (totalWeight > 0) {
-                const finalSolid = (W1 * (C1 / 100)) / totalWeight;
-                document.getElementById('totalWeight').innerText = totalWeight.toFixed(2);
-                document.getElementById('finalSolid').innerText = (finalSolid * 100).toFixed(2) + '%';
-            } else {
-                document.getElementById('totalWeight').innerText = '0.00';
-                document.getElementById('finalSolid').innerText = '0.00%';
-            }
-        }
-        
-        // 初始化計算一次
-        calculate();
-    </script>
-</body>
-</html>
+                    <div class="bg-blue-50 p-4 rounded-lg text-center border border-blue-100">
+                        <span class="block text-xs text-blue-400 uppercase tracking-wider mb-1">最終固含量</span>
+                        <span class="text-2xl font-bold text-blue-600" id="finalSolid">40.00%</span>
