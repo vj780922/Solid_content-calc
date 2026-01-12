@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RO 水添加量計算機</title>
+    <title>含水物重量計算機</title>
     <style>
         /* 統一字型設定：英文數字 Calibri, 中文 微軟正黑體 */
         body { 
@@ -43,93 +43,4 @@
         .result-label { color: #1967d2; font-size: 15px; margin-bottom: 5px; font-weight: 500; }
         .result-value { font-size: 34px; font-weight: bold; color: #d93025; font-family: Calibri, sans-serif; }
         
-        .footer { text-align: center; color: #888; font-size: 12px; line-height: 1.6; margin-top: auto; padding-top: 10px; font-family: Calibri, "Microsoft JhengHei", sans-serif; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-<div class="card">
-    <h2>RO 水添加量計算機</h2>
-    
-    <div class="input-group">
-        <label>原始固含量 (%)</label>
-        <input type="number" id="origSolid" placeholder="請輸入固含量" step="0.1" onfocus="this.select()">
-    </div>
-
-    <div class="input-group">
-        <label>原始重量 (kg)</label>
-        <input type="number" id="origWeight" placeholder="請輸入重量" step="0.1" onfocus="this.select()">
-    </div>
-
-    <div class="input-group">
-        <label>目標固含量 (%)</label>
-        <input type="number" id="targetSolid" placeholder="請輸入目標固含量" step="0.1" onfocus="this.select()">
-    </div>
-
-    <div class="btn-group">
-        <button class="btn-calc" onclick="calculate()">計算添加量</button>
-        <button class="btn-reset" onclick="resetForm()">清除</button>
-    </div>
-
-    <div class="result-box" id="resultArea">
-        <div class="result-label">建議加入 RO 水重量</div>
-        <div class="result-value"><span id="output">0</span> <small style="font-size: 16px; color: #444;">kg</small></div>
-    </div>
-</div>
-
-<div class="footer">
-    作者：SJ<br>
-    版本：v1.2.2<br>
-    最後更新日期：2026-01-12
-</div>
-
-<script>
-    function calculate() {
-        const c1Input = document.getElementById('origSolid');
-        const w1Input = document.getElementById('origWeight');
-        const ctInput = document.getElementById('targetSolid');
-        const resArea = document.getElementById('resultArea');
-        const output = document.getElementById('output');
-
-        if (!c1Input.value || !w1Input.value || !ctInput.value) {
-            alert("請填寫完整的數值");
-            return;
-        }
-
-        const C1 = parseFloat(c1Input.value);
-        const W1 = parseFloat(w1Input.value);
-        const Ctarget = parseFloat(ctInput.value);
-
-        if (Ctarget >= C1) {
-            alert("錯誤：目標固含量必須低於原始固含量（稀釋邏輯）。");
-            return;
-        }
-
-        if (Ctarget <= 0) {
-            alert("錯誤：目標固含量不能為 0。");
-            return;
-        }
-
-        // 公式: W_water = (W1 * C1 / Ctarget) - W1
-        const waterNeeded = (W1 * C1 / Ctarget) - W1;
-        
-        output.innerText = waterNeeded.toFixed(2);
-        resArea.style.display = 'block';
-        
-        setTimeout(() => {
-            resArea.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-    }
-
-    function resetForm() {
-        document.getElementById('origSolid').value = '';
-        document.getElementById('origWeight').value = '';
-        document.getElementById('targetSolid').value = '';
-        document.getElementById('resultArea').style.display = 'none';
-    }
-</script>
-
-</body>
-</html>
+        .footer {
