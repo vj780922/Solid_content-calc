@@ -5,9 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>含水物重量計算機</title>
     <style>
-        /* 統一字型設定：英文數字 Calibri, 中文 微軟正黑體 */
+        /* 1. 全域字型設定：強制先找 Calibri，再找微軟正黑體 */
+        * {
+            font-family: Calibri, "Microsoft JhengHei", "微軟正黑體", sans-serif !important;
+        }
+
         body { 
-            font-family: Calibri, "Microsoft JhengHei", "微軟正黑體", sans-serif; 
             background-color: #f0f2f5; 
             display: flex; 
             flex-direction: column; 
@@ -17,9 +20,9 @@
             padding: 20px; 
             box-sizing: border-box; 
         }
+
         .card { background: white; width: 100%; max-width: 400px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 25px; margin-bottom: 20px; }
         
-        /* 標題 (h2)：預設約 24px-30px */
         h2 { text-align: center; color: #1a73e8; margin-top: 0; margin-bottom: 25px; letter-spacing: 1px; font-weight: bold; font-size: 26px; }
         
         .input-group { margin-bottom: 18px; }
@@ -27,126 +30,42 @@
         /* 標籤文字 (Label)：15px */
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 15px; }
         
-        /* 輸入框文字 (Input)：18px */
+        /* 2. 輸入框文字 (Input)：18px，強制覆蓋瀏覽器預設字型 */
         input { 
             width: 100%; 
             padding: 15px; 
             border: 2px solid #ddd; 
             border-radius: 10px; 
-            font-size: 18px; 
+            font-size: 18px !important; 
             box-sizing: border-box; 
             transition: all 0.3s; 
-            font-family: Calibri, "Microsoft JhengHei", sans-serif; 
+            /* 讓數字排列更整齊 */
+            font-variant-numeric: tabular-nums;
+            background-color: white;
+            -webkit-appearance: none; /* 防止 iOS 預設樣式干擾 */
         }
+
         input:focus { border-color: #1a73e8; outline: none; background-color: #fcfcfc; }
-        input::placeholder { font-family: "Microsoft JhengHei", sans-serif; font-size: 16px; color: #aaa; }
+        
+        /* Placeholder 字型稍微縮小並維持中文格式 */
+        input::placeholder { font-size: 16px; color: #aaa; }
         
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
         
-        /* 計算與清除按鈕：18px */
-        .btn-calc { flex: 2; padding: 15px; background-color: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; order: 1; font-family: "Microsoft JhengHei", sans-serif; }
-        .btn-reset { flex: 1; padding: 15px; background-color: #6c757d; color: white; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; order: 2; font-family: "Microsoft JhengHei", sans-serif; }
+        /* 按鈕：18px */
+        .btn-calc { flex: 2; padding: 15px; background-color: #1a73e8; color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: bold; cursor: pointer; order: 1; }
+        .btn-reset { flex: 1; padding: 15px; background-color: #6c757d; color: white; border: none; border-radius: 10px; font-size: 18px; cursor: pointer; order: 2; }
+        
         button:active { transform: scale(0.97); opacity: 0.9; }
         
         .result-box { margin-top: 25px; padding: 20px; background-color: #e8f0fe; border-radius: 10px; display: none; text-align: center; animation: fadeIn 0.4s; }
         
-        /* 結果標題：15px */
         .result-label { color: #1967d2; font-size: 15px; margin-bottom: 5px; font-weight: 500; }
         
         /* 結果數值：34px */
-        .result-value { font-size: 34px; font-weight: bold; color: #d93025; font-family: Calibri, sans-serif; }
+        .result-value { font-size: 34px; font-weight: bold; color: #d93025; }
         
         /* 結果單位 (kg)：16px */
         .result-unit { font-size: 16px; color: #444; font-weight: normal; }
         
-        /* 頁腳資訊 (Footer)：12px */
-        .footer { text-align: center; color: #888; font-size: 12px; line-height: 1.6; margin-top: auto; padding-top: 10px; font-family: Calibri, "Microsoft JhengHei", sans-serif; }
-        
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-    </style>
-</head>
-<body>
-
-<div class="card">
-    <h2>含水物重量計算機</h2>
-    
-    <div class="input-group">
-        <label>原料固含量 (%)</label>
-        <input type="number" id="solidPct" placeholder="請輸入固含量" step="0.01" onfocus="this.select()">
-    </div>
-
-    <div class="input-group">
-        <label>外加含水物重量 (Kg)</label>
-        <input type="number" id="addedWeight" placeholder="請輸入重量" step="0.001" onfocus="this.select()">
-    </div>
-
-    <div class="input-group">
-        <label>目標總含水率 (%)</label>
-        <input type="number" id="targetMoisture" placeholder="請輸入目標" step="0.1" onfocus="this.select()">
-    </div>
-
-    <div class="btn-group">
-        <button class="btn-calc" onclick="calculate()">計算含水物重量</button>
-        <button class="btn-reset" onclick="resetForm()">清除</button>
-    </div>
-
-    <div class="result-box" id="resultArea">
-        <div class="result-label">應秤取含水物重量</div>
-        <div class="result-value">
-            <span id="output">0</span> 
-            <span class="result-unit">kg</span>
-        </div>
-    </div>
-</div>
-
-<div class="footer">
-    作者：SJ<br>
-    版本：v1.1.0<br>
-    最後更新日期：2026-01-12
-</div>
-
-<script>
-    function calculate() {
-        const sInput = document.getElementById('solidPct');
-        const wInput = document.getElementById('addedWeight');
-        const mInput = document.getElementById('targetMoisture');
-        const resArea = document.getElementById('resultArea');
-        const output = document.getElementById('output');
-
-        if (!sInput.value || !wInput.value || !mInput.value) {
-            alert("請填寫完整的數值");
-            return;
-        }
-
-        const S = parseFloat(sInput.value) / 100;    
-        const W = parseFloat(wInput.value);          
-        const Mt = parseFloat(mInput.value) / 100;   
-
-        // 公式：X = (Mt * W) / (1 - S - Mt)
-        const denominator = 1 - S - Mt;
-
-        if (Math.abs(denominator) < 0.000001) {
-            alert("錯誤：參數設定導致無法計算");
-            return;
-        }
-
-        const X = (Mt * W) / denominator;
-        
-        output.innerText = Math.abs(X).toFixed(4);
-        resArea.style.display = 'block';
-        
-        setTimeout(() => {
-            resArea.scrollIntoView({ behavior: 'smooth' });
-        }, 100);
-    }
-
-    function resetForm() {
-        document.getElementById('solidPct').value = '';
-        document.getElementById('addedWeight').value = '';
-        document.getElementById('targetMoisture').value = '';
-        document.getElementById('resultArea').style.display = 'none';
-    }
-</script>
-
-</body>
-</html>
+        /* 頁腳資訊 (Footer)：1
