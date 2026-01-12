@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>含水物重量計算機</title>
     <style>
-        /* 1. 全域字型設定：強制先找 Calibri，再找微軟正黑體 */
+        /* 強制套用字型：英文數字 Calibri, 中文 微軟正黑體 */
         * {
             font-family: Calibri, "Microsoft JhengHei", "微軟正黑體", sans-serif !important;
         }
@@ -27,10 +27,10 @@
         
         .input-group { margin-bottom: 18px; }
         
-        /* 標籤文字 (Label)：15px */
+        /* 標籤文字：15px */
         label { display: block; margin-bottom: 8px; font-weight: 600; color: #444; font-size: 15px; }
         
-        /* 2. 輸入框文字 (Input)：18px，強制覆蓋瀏覽器預設字型 */
+        /* 輸入框：18px，強制覆蓋 */
         input { 
             width: 100%; 
             padding: 15px; 
@@ -39,15 +39,12 @@
             font-size: 18px !important; 
             box-sizing: border-box; 
             transition: all 0.3s; 
-            /* 讓數字排列更整齊 */
             font-variant-numeric: tabular-nums;
             background-color: white;
-            -webkit-appearance: none; /* 防止 iOS 預設樣式干擾 */
+            -webkit-appearance: none;
         }
 
         input:focus { border-color: #1a73e8; outline: none; background-color: #fcfcfc; }
-        
-        /* Placeholder 字型稍微縮小並維持中文格式 */
         input::placeholder { font-size: 16px; color: #aaa; }
         
         .btn-group { display: flex; gap: 10px; margin-top: 20px; }
@@ -59,13 +56,22 @@
         button:active { transform: scale(0.97); opacity: 0.9; }
         
         .result-box { margin-top: 25px; padding: 20px; background-color: #e8f0fe; border-radius: 10px; display: none; text-align: center; animation: fadeIn 0.4s; }
-        
         .result-label { color: #1967d2; font-size: 15px; margin-bottom: 5px; font-weight: 500; }
         
         /* 結果數值：34px */
         .result-value { font-size: 34px; font-weight: bold; color: #d93025; }
-        
-        /* 結果單位 (kg)：16px */
         .result-unit { font-size: 16px; color: #444; font-weight: normal; }
         
-        /* 頁腳資訊 (Footer)：1
+        /* 頁腳：12px */
+        .footer { text-align: center; color: #888; font-size: 12px; line-height: 1.6; margin-top: auto; padding-top: 10px; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2>含水物重量計算機</h2>
+    
+    <div class="input-group">
+        <label>原料固含量 (%)
