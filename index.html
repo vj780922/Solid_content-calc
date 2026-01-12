@@ -3,11 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>固含量稀釋計算機</title>
+    <title>RO 水添加量計算機</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { background-color: #f1f5f9; }
+        /* 統一字型設定 */
+        body { 
+            background-color: #f1f5f9; 
+            font-family: Calibri, "Microsoft JhengHei", "微軟正黑體", sans-serif;
+        }
         .dashed-box { border: 2px dashed #d1d5db; background-color: #f9fafb; }
+        input::placeholder { font-family: "Microsoft JhengHei", sans-serif; }
     </style>
 </head>
 <body class="flex flex-col items-center justify-center min-h-screen p-4">
@@ -55,7 +60,7 @@
         </div>
     </div>
 
-    <div class="mt-8 text-center text-slate-400 space-y-1">
+    <div class="mt-8 text-center text-slate-400 space-y-1 text-sm">
         <p>作者：SJ</p>
         <p>版本：v1.1.0</p>
         <p>最後更新日期：2025-01-12</p>
@@ -80,7 +85,7 @@
             }
 
             if (Ctarget <= 0) {
-                resultDisplay.innerText = "目標不能為0";
+                resultDisplay.innerText = "目標不能為 0";
                 return;
             }
 
