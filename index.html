@@ -74,4 +74,82 @@
     <h2>含水物重量計算機</h2>
     
     <div class="input-group">
-        <label>原料固含量 (%)
+        <label>原料固含量 (%)</label>
+        <input type="number" id="solidPct" placeholder="請輸入固含量" step="0.01" onfocus="this.select()">
+    </div>
+
+    <div class="input-group">
+        <label>外加含水物重量 (Kg)</label>
+        <input type="number" id="addedWeight" placeholder="請輸入重量" step="0.001" onfocus="this.select()">
+    </div>
+
+    <div class="input-group">
+        <label>目標總含水率 (%)</label>
+        <input type="number" id="targetMoisture" placeholder="請輸入目標" step="0.1" onfocus="this.select()">
+    </div>
+
+    <div class="btn-group">
+        <button class="btn-calc" onclick="calculate()">計算含水物重量</button>
+        <button class="btn-reset" onclick="resetForm()">清除</button>
+    </div>
+
+    <div class="result-box" id="resultArea">
+        <div class="result-label">應秤取含水物重量</div>
+        <div class="result-value">
+            <span id="output">0</span> 
+            <span class="result-unit">kg</span>
+        </div>
+    </div>
+</div>
+
+<div class="footer">
+    作者：SJ<br>
+    版本：v1.1.0<br>
+    最後更新日期：2026-01-12
+</div>
+
+<script>
+    function calculate() {
+        const sInput = document.getElementById('solidPct');
+        const wInput = document.getElementById('addedWeight');
+        const mInput = document.getElementById('targetMoisture');
+        const resArea = document.getElementById('resultArea');
+        const output = document.getElementById('output');
+
+        if (!sInput.value || !wInput.value || !mInput.value) {
+            alert("請填寫完整的數值");
+            return;
+        }
+
+        const S = parseFloat(sInput.value) / 100;    
+        const W = parseFloat(wInput.value);          
+        const Mt = parseFloat(mInput.value) / 100;   
+
+        // 公式：X = (Mt * W) / (1 - S - Mt)
+        const denominator = 1 - S - Mt;
+
+        if (Math.abs(denominator) < 0.000001) {
+            alert("錯誤：參數設定導致無法計算");
+            return;
+        }
+
+        const X = (Mt * W) / denominator;
+        
+        output.innerText = Math.abs(X).toFixed(4);
+        resArea.style.display = 'block';
+        
+        setTimeout(() => {
+            resArea.scrollIntoView({ behavior: 'smooth' });
+        }, 100);
+    }
+
+    function resetForm() {
+        document.getElementById('solidPct').value = '';
+        document.getElementById('addedWeight').value = '';
+        document.getElementById('targetMoisture').value = '';
+        document.getElementById('resultArea').style.display = 'none';
+    }
+</script>
+
+</body>
+</html>
